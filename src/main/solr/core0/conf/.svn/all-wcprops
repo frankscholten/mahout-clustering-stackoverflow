@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/repos/asf/!svn/ver/1336098/whirr/trunk/services/solr/src/test/resources/conf/core0/conf
+END
+schema.xml
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/asf/!svn/ver/1336098/whirr/trunk/services/solr/src/test/resources/conf/core0/conf/schema.xml
+END
+solrconfig.xml
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1336098/whirr/trunk/services/solr/src/test/resources/conf/core0/conf/solrconfig.xml
+END

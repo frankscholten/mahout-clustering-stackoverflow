@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script type="text/javascript" src="js/jquery-1.6.4.js"></script>
+    <script type="text/javascript" src="js/jquery.highlight-3.js"></script>
+    <script language="javascript" type="text/javascript">
+        (function () {
+            var start = 0;
+            var rows = 30;
+
+            function search() {
+                q = $("#search").val();
+
+                if (q == "") {
+                    q = "*:*"
+                } else {
+                    q = "cluster_name:" + q + "*"
+                }
+
+                var url = "http://localhost:8983/core0/select/?q=" + q + "&start=" + start + "&rows=" + rows + "&indent=true&sort=cluster_name%20asc&wt=json&json.wrf=?";
+
+                var postContainer = document.getElementById('posts');
+                $(postContainer).empty();
+
+                $.getJSON(url, function(clusters) {
+                    var tags = document.getElementById('tags');
+                    $(tags).empty();
+                    for (var i = 0; i < clusters.response.docs.length; i++) {
+                        var thisResult = clusters.response.docs[i].cluster_name + " [" + clusters.response.docs[i].size + "]";
+                        var tag = document.createElement("button");
+                        tag.setAttribute("id", clusters.response.docs[i].cluster_id);
+                        tag.setAttribute("data-id", clusters.response.docs[i].cluster_id);
+                        tag.setAttribute("data-name", clusters.response.docs[i].cluster_name);
+                        tag.setAttribute("class", "tag");
+                        tag.innerHTML = thisResult;
+                        tags.appendChild(tag);
+
+                        $(tag).click(function showPosts() {
+                            var clusterId = $(this).data('id');
+                            var clusterName = $(this).data('name');
+
+                            var url = "http://localhost:8983/core0/select/?q=cluster_id:" + clusterId + "&fl=title,content&start=0&rows=50&indent=true&sort=title%20asc&wt=json&json.wrf=?";
+
+                            $.getJSON(url, function(posts) {
+                                var postContainer = document.getElementById('posts');
+                                $(postContainer).empty();
+                                for (var i = 0; i < posts.response.docs.length; i++) {
+                                    var title = posts.response.docs[i].title;
+                                    var post = document.createElement("div");
+                                    post.setAttribute("class", "post");
+                                    post.innerHTML = posts.response.docs[i].content;
+                                    postContainer.appendChild(post);
+                                    $("div .post").highlight(clusterName);
+                                }
+                            });
+
+                        });
+                    }
+                    refreshPagination(clusters.response.numFound);
+                });
+            }
+
+            function refreshPagination(numFound) {
+                if (numFound < rows || start + rows >= numFound) {
+                    $("#next").hide();
+                } else {
+                    $("#next").show();
+                }
+                if (start == 0) {
+                    $("#previous").hide();
+                } else {
+                    $("#previous").show();
+                }
+
+                $("#hits").text(numFound + " tag(s)");
+            }
+
+            $(function() {
+                $("#submit").click(function() {
+                    start = 0;
+                    rows = 50;
+                    search();
+                });
+                $("#next").click(function() {
+                    $("#posts").empty();
+                    start = start + rows;
+                    search();
+                });
+                $("#previous").click(function() {
+                    $("#posts").empty();
+                    start = start - rows;
+                    if (start <= 0) {
+                        start = 0;
+                    }
+                    search();
+                });
+            });
+        })();
+    </script>
+</head>
+
+<body>
+
+<div id="wrap">
+    <div id="header">
+        <img alt="StackOverflow.com" class="large" src="images/stackoverflow-logo.png"/>
+
+        <h3>clustering demo powered by</h3>
+        <img alt="Apache Mahout" class="small" src="images/mahout_logo.png"/>
+        <img alt="Apache Solr" class="small" src="images/solr.jpg">
+
+        <div class="clear"></div>
+
+        <form id="form" action="#">
+            <label for="search">
+                <input id="search" type="text" name="q">
+                <input id="submit" type="button" value="Search">
+            </label>
+
+            <div id="hits"></div>
+        </form>
+    </div>
+
+    <div id="main">
+        <div id="tags"></div>
+
+        <div id="pagers">
+            <input type="button" class="pager" id="previous" value="Previous"/> <input type="button" class="pager" id="next"
+                                                                                       value="Next">
+        </div>
+    </div>
+
+    <div id="sidebar">
+        <div id="posts"></div>
+    </div>
+</div>
+
+</body>
+
+</html>
