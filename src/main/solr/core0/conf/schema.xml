@@ -32,6 +32,7 @@
         <field name="cluster_id" type="string" stored="true" required="false"/>
         <field name="cluster_name" type="string" stored="true" indexed="true" required="false"/>
         <field name="size" type="string" stored="true" required="false"/>
+        <field name="type" type="string" stored="true" indexed="true" required="false"/>
 
         <field name="post_id" type="string" stored="true" required="false"/>
         <field name="post_cluster_id" type="string" stored="true" indexed="true" required="false"/>

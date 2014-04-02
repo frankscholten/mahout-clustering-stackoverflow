@@ -40,7 +40,7 @@ public class PostIndexer extends Configured {
   }
 
   public void buildIndex() throws IOException, SolrServerException {
-    SequenceFileDirIterable<LongWritable, ClusteredDocument> iterable = new SequenceFileDirIterable<LongWritable, ClusteredDocument>(clusteredPostsPath, PathType.GLOB, PathFilters.partFilter(), getConf());
+    SequenceFileDirIterable<LongWritable, ClusteredDocument> iterable = new SequenceFileDirIterable<LongWritable, ClusteredDocument>(clusteredPostsPath, PathType.LIST, PathFilters.partFilter(), getConf());
     for (Pair<LongWritable, ClusteredDocument> pair : iterable) {
       indexPost(pair);
     }
@@ -63,6 +63,7 @@ public class PostIndexer extends Configured {
       doc.addField("cluster_id", clusterId);
       doc.addField("cluster_name", clusterNames.get(clusterId));
       doc.addField("size", cluster.getNumPoints());
+      doc.addField("type", "cluster");
 
       solrClient.add(doc);
 
@@ -82,6 +83,7 @@ public class PostIndexer extends Configured {
     doc.addField("post_cluster_id", clusteredDocument.getClusterId().toString());
     doc.addField("title", clusteredDocument.getDocumentTitle().toString());
     doc.addField("content", clusteredDocument.getDocumentContent().toString());
+    doc.addField("type", "post");
 
     solrClient.add(doc);
 
