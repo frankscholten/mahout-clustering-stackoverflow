@@ -12,7 +12,7 @@
     <description>Berlin Buzzwords 2011 demo - Mahout clustering on the StackOverflow dump</description>
 
     <properties>
-        <lucene.version>3.3.0</lucene.version>
+        <lucene.version>8.8.2</lucene.version>
         <mahout.version>0.6</mahout.version>
         <whirr.version>0.7.1</whirr.version>
     </properties>
